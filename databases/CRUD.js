@@ -108,17 +108,26 @@ const addClient = async(request,response) =>{
     }
 }
 
-// const searchClient = async() =>{
-//     try{
-//         const db = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
-//         const person = db.collection('client');
+const searchClient = async(request, response) =>{
+    try{
+        const db = mongodb.db(`${process.env.MONGO_DATABASE}`);
+        const person = db.collection('client');
 
-//         const filter = {cpfCliente: request.params.cpfClient}
-//         await person.find('filter').forEach(p => console.log(p));
-//     }finally{
-//         await mongodb.close();
-//     }
-// }
+        const filter = {cpfCliente: request.params.cpfClient}
+        const array = []
+
+        await person.find(filter).forEach(p => array.push(p));
+
+        if(array.length > 0){
+            response.send(array);
+        }
+        else{
+            response.send('Cliente inexistente')
+        }
+    }catch{
+        response.send(err);
+    }
+}
 
 //Exportando tudo
-module.exports={add,delet,update,search,addClient}
+module.exports={add,delet,update,search,addClient,searchClient}
