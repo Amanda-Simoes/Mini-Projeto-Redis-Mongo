@@ -1,6 +1,8 @@
 const client = require("./redis")
 const poll = require("./postgres")
 const pool = require("./postgres")
+const mongodb = require("./mongodb");
+const { request, response } = require("express");
 
 //Adicionar Item
 const add = (request, response) => {
@@ -84,5 +86,39 @@ const search = (request, response) => {
     });
 }
 
+// CRUD UTILIZANDO O BANCO DE DADOS MONGODB
+
+// Adicionando cliente
+const addClient = async(request,response) =>{
+    const client = {
+        nameClient: request.params.nameClient,
+        cpfClient: request.params.cpfClient,
+        pedidos: []
+
+    }
+    try{
+        const person = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
+        await person.insertOne(client).then(() => {
+            response.send('Cliente inserido com sucesso!')
+        }).catch((err) => {
+            response.send(err)
+        })
+    }finally{
+        await mongodb.close();
+    }
+}
+
+// const searchClient = async() =>{
+//     try{
+//         const db = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
+//         const person = db.collection('client');
+
+//         const filter = {cpfCliente: request.params.cpfClient}
+//         await person.find('filter').forEach(p => console.log(p));
+//     }finally{
+//         await mongodb.close();
+//     }
+// }
+
 //Exportando tudo
-module.exports={add,delet,update,search}
+module.exports={add,delet,update,search,addClient}
