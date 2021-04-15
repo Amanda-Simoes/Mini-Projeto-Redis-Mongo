@@ -7,7 +7,7 @@ const app = express();
 
 //Rotas no qual será possivel realizar o CRUD
 
-app.get('/add/:produto', crud.add)
+app.get('/add/:produto/:valor', crud.add)
 app.get('/delete/:codigo', crud.delet)
 app.get('/search/:codigo', crud.search)
 app.get('/update/:codigo/:produto', crud.update)
@@ -16,6 +16,7 @@ app.get('/update/:codigo/:produto', crud.update)
 
 app.get('/addClient/:nameClient/:cpfClient', crud.addClient)
 app.get('/searchClient', crud.searchClient);
+app.get('/deleteClient/:cpfClient', crud.deleteClient);
 
 app.listen(process.env.SERVER_PORT, () => { 
     console.log(`O servidor esta rodando na URL http://localhost:${process.env.SERVER_PORT}`)

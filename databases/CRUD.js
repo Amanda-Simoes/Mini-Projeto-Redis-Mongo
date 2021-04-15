@@ -8,11 +8,12 @@ const { request, response } = require("express");
 const add = (request, response) => {
 
     //Consulta
-    const query = 'INSERT INTO Item (nome) VALUES ($1)'
+    const query = 'INSERT INTO Item (nome, valor) VALUES ($1, $2)'
 
-    const item = [request.params.produto]
+    const item = [request.params.produto, request.params.valor]
+    // const preco = [request.params.valor]
 
-    poll.query(query, item, (err, res) => {
+    poll.query(query, item,  (err, res) => {
         if (err) throw err;
         //Informando se deu certo a consulta ou não (1 - TRUE e 0 - FALSE)
         console.log(`${res.command} ${res.rowCount}`)
@@ -108,6 +109,7 @@ const addClient = async(request,response) =>{
     }
 }
 
+//Buscando clientes
 const searchClient = async(request, response) =>{
     try{
         const db = mongodb.db(`${process.env.MONGO_DATABASE}`);
@@ -129,5 +131,37 @@ const searchClient = async(request, response) =>{
     }
 }
 
+//Delete clientes
+const deleteClient = async(request, response) => {
+    try{
+        const db = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
+
+        const filter = {cpfClient: request.params.cpfClient}
+        const person = await db.deleteOne(filter);
+
+        if (person.deletedCount > 0 ) {
+            response.send('Cliente excluido com sucesso !')
+       } else {
+            response.send(`Desculpe, o cliente com o CPF "${request.params.cpfClient}" não existe !`)
+       }
+    }catch(err){
+        response.send(err);
+    }
+}
+
+
+
+// async function deletePessoa(filter){
+//     try{
+//         await client.connect();
+//         const pessoas = client.db(`${process.env.MONGO_DATABASE}`).collection('Pessoa');
+
+//         const result = await pessoas.deleteOne(filter);
+//         console.log(`${result.deletedCount} documentos removidos`);
+//     }finally{
+//         await client.close();
+//     }
+// }
+
 //Exportando tudo
-module.exports={add,delet,update,search,addClient,searchClient}
+module.exports={add,delet,update,search,addClient,searchClient,deleteClient}
