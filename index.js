@@ -17,6 +17,7 @@ app.get('/update/:codigo/:produto', crud.update)
 app.get('/addClient/:nameClient/:cpfClient', crud.addClient)
 app.get('/searchClient', crud.searchClient);
 app.get('/deleteClient/:cpfClient', crud.deleteClient);
+app.get('/updateClient/:nameClient/:newName', crud.updateClient)
 
 app.listen(process.env.SERVER_PORT, () => { 
     console.log(`O servidor esta rodando na URL http://localhost:${process.env.SERVER_PORT}`)

@@ -149,19 +149,24 @@ const deleteClient = async(request, response) => {
     }
 }
 
+//Atualizando dados do cliente
+const updateClient = async(request, response) => {
+    try{
+        const db = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
+        // const query = {nameClient: request.params.nameClient}
+        // const update = {$set: {nameClient: request.params.newName}}
+        const result = await db.updateOne({nameClient: request.params.nameClient}, {$set: {nameClient: request.params.newName}})
 
+        if (result.modifiedCount > 0 ) {
+            response.send('Cliente atualizado com sucesso !')
+        } else {
+            response.send('Falha ao atualizar ! ')
+        }
 
-// async function deletePessoa(filter){
-//     try{
-//         await client.connect();
-//         const pessoas = client.db(`${process.env.MONGO_DATABASE}`).collection('Pessoa');
-
-//         const result = await pessoas.deleteOne(filter);
-//         console.log(`${result.deletedCount} documentos removidos`);
-//     }finally{
-//         await client.close();
-//     }
-// }
+    }catch(err){
+        await mongodb.close();
+    }
+}
 
 //Exportando tudo
-module.exports={add,delet,update,search,addClient,searchClient,deleteClient}
+module.exports={add,delet,update,search,addClient,searchClient,deleteClient,updateClient}
