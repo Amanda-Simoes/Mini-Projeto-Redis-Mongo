@@ -105,7 +105,7 @@ const addClient = async(request,response) =>{
             response.send(err)
         })
     }finally{
-        await mongodb.close();
+        response.send(err);
     }
 }
 
@@ -115,7 +115,7 @@ const searchClient = async(request, response) =>{
         const db = mongodb.db(`${process.env.MONGO_DATABASE}`);
         const person = db.collection('client');
 
-        const filter = {cpfCliente: request.params.cpfClient}
+        const filter = {cpfClient: request.params.cpfClient}
         const array = []
 
         await person.find(filter).forEach(p => array.push(p));
@@ -164,9 +164,12 @@ const updateClient = async(request, response) => {
         }
 
     }catch(err){
-        await mongodb.close();
+        response.send(err);
     }
 }
+
+//Pedidos
+
 
 //Exportando tudo
 module.exports={add,delet,update,search,addClient,searchClient,deleteClient,updateClient}

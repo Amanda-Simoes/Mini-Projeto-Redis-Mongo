@@ -15,9 +15,13 @@ app.get('/update/:codigo/:produto', crud.update)
 // Rotas do MongoDB
 
 app.get('/addClient/:nameClient/:cpfClient', crud.addClient)
-app.get('/searchClient', crud.searchClient);
+app.get('/searchClient/:cpfClient', crud.searchClient);
 app.get('/deleteClient/:cpfClient', crud.deleteClient);
 app.get('/updateClient/:nameClient/:newName', crud.updateClient)
+
+// Rotas para os pedidos
+
+// app.get('/pedidoClient/:cpfClient/:produto/:quant', crud.pedidoClient)
 
 app.listen(process.env.SERVER_PORT, () => { 
     console.log(`O servidor esta rodando na URL http://localhost:${process.env.SERVER_PORT}`)
