@@ -19,7 +19,7 @@ app.get('/searchClient/:cpfClient', crud.searchClient);
 app.get('/deleteClient/:cpfClient', crud.deleteClient);
 app.get('/updateClient/:nameClient/:newName', crud.updateClient)
 
-// Rotas para os pedidos
+// Rota para os pedidos
 
 app.get('/pedidoClient/:cpfClient/:produto/:quant', crud.pedidos)
 

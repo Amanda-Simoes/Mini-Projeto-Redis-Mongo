@@ -91,6 +91,7 @@ const search = (request, response) => {
 
 // Adicionando cliente
 const addClient = async(request,response) =>{
+    //Criando a collection no banco mongo
     const client = {
         nameClient: request.params.nameClient,
         cpfClient: request.params.cpfClient,
@@ -99,28 +100,31 @@ const addClient = async(request,response) =>{
     }
     try{
         const person = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
+        //Inservindo no banco
         await person.insertOne(client).then(() => {
             response.send('Cliente inserido com sucesso!')
         }).catch((err) => {
             response.send(err)
         })
-    }finally{
+    }catch{
         response.send(err);
     }
 }
 
 //Buscando clientes
 const searchClient = async(request, response) =>{
+    //Pesquisando cliente pelo seu CPF
     try{
         const db = mongodb.db(`${process.env.MONGO_DATABASE}`);
         const person = db.collection('client');
 
-        const filter = {cpfClient: request.params.cpfClient}
+        const p = {cpfClient: request.params.cpfClient}
         const array = []
 
-        await person.find(filter).forEach(p => array.push(p));
+        await person.find(p).forEach(p => array.push(p));
 
         if(array.length > 0){
+            //Retornando os dados do cliente
             response.send(array);
         }
         else{
@@ -136,13 +140,13 @@ const deleteClient = async(request, response) => {
     try{
         const db = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
 
-        const filter = {cpfClient: request.params.cpfClient}
-        const person = await db.deleteOne(filter);
+        const p = {cpfClient: request.params.cpfClient}
+        const person = await db.deleteOne(p);
 
         if (person.deletedCount > 0 ) {
             response.send('Cliente excluido com sucesso !')
        } else {
-            response.send(`Desculpe, o cliente com o CPF "${request.params.cpfClient}" não existe !`)
+            response.send("Cliente não cadastrado")
        }
     }catch(err){
         response.send(err);
@@ -153,8 +157,7 @@ const deleteClient = async(request, response) => {
 const updateClient = async(request, response) => {
     try{
         const db = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
-        // const query = {nameClient: request.params.nameClient}
-        // const update = {$set: {nameClient: request.params.newName}}
+        //Atualizando o nome do cliente
         const result = await db.updateOne({nameClient: request.params.nameClient}, {$set: {nameClient: request.params.newName}})
 
         if (result.modifiedCount > 0 ) {
