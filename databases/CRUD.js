@@ -169,7 +169,49 @@ const updateClient = async(request, response) => {
 }
 
 //Pedidos
+const pedidos = async(request, response) => {
+    try{
+        const db = mongodb.db(`${process.env.MONGO_DATABASE}`).collection('client');
+        var cliente = ''
+
+        await db.find({cpfClient: request.params.cpfClient}).forEach(c => cliente = c)
+
+        if(client != ''){
+            const query = 'SELECT * FROM Item WHERE Nome = $1'
+            const produto = [request.params.produto]
+            
+            pool.query(query, produto, async(err, result) => {
+                if(err) throw err;
+                else if(result.rows.length > 0){
+                    const valor = parseInt(request.params.quant) * result.rows[0].valor
+
+                    const pedido = {
+                        id: cliente.pedidos.length + 1,
+                        produto: result.rows[0].nome,
+                        quant: parseInt(request.params.quant),
+                        valorFinal: valor
+                    }
+                    cliente.pedidos.push(pedido)
+
+                    const r = await db.updateOne({cpfClient: cliente.cpfClient}, {$set: {pedidos: cliente.pedidos}})
+
+                    if (r.modifiedCount > 0){
+                        response.send("O produto foi adicionado a lista de pedido")
+                    }else{
+                        response.send("Falha ao adicionar o produto")
+                    }
+                }else{
+                    response.status(400).json({error: "O produto não existe"})
+                }
+            })
+        }else{
+            response.status(400).json({error: "Cliente não cadastrado"})
+        }
+    }catch(err){
+        response.send(err);
+    }
+}
 
 
 //Exportando tudo
-module.exports={add,delet,update,search,addClient,searchClient,deleteClient,updateClient}
+module.exports={add,delet,update,search,addClient,searchClient,deleteClient,updateClient,pedidos}

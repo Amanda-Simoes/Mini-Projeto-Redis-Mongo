@@ -21,7 +21,7 @@ app.get('/updateClient/:nameClient/:newName', crud.updateClient)
 
 // Rotas para os pedidos
 
-// app.get('/pedidoClient/:cpfClient/:produto/:quant', crud.pedidoClient)
+app.get('/pedidoClient/:cpfClient/:produto/:quant', crud.pedidos)
 
 app.listen(process.env.SERVER_PORT, () => { 
     console.log(`O servidor esta rodando na URL http://localhost:${process.env.SERVER_PORT}`)
